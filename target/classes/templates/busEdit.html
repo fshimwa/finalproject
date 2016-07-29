@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="main">
+<head>
+    <title>Welcome to Volcano</title>
+</head>
+<div class="col-lg-12" layout:fragment="content">
+    <h1 class="page-header">
+        BUS
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <i class="fa fa-dashboard"></i> <a href="">List Bus</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-edit"></i> Add new
+        </li>
+    </ol>
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12" layout:fragment="content">
+        <form th:object="${bus}" th:action="@{/bus/save}" action="#" method="post" class="form-horizontal" role="form">
+            <div style="display: none">
+                <input type="text" th:field="*{id}" class="form-control" placeholder="id"/>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-2 control-label" for="plaque">Plaque</label>
+                <div class="col-xs-6">
+                    <input type="text" id="plaque" class="form-control" th:field="*{plaque}"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-2 control-label" for="seats">Seats</label>
+                <div class="col-xs-6">
+                    <input type="number" th:field="*{seats}" class="form-control" placeholder="seats" id="seats"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+
+                <div class="col-xs-6">
+                    <input type="submit" class="btn btn-default" value="Save"/>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+</html>

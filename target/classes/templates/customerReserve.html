@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="main">
+<head>
+    <title>Welcome to Volcano</title>
+</head>
+<div class="col-lg-12" layout:fragment="pageHeader">
+    <h1 class="page-header">
+        RESERVATION
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <i class="fa fa-dashboard"></i> <a th:href="@{/reservation/list}">List reservation</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-edit"></i> Add new
+        </li>
+    </ol>
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12" layout:fragment="content">
+        <form th:object="${reservation}" th:action="@{/reservation/save}" action="#" method="post" class="form-horizontal" role="form">
+            <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
+                <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
+            </div>
+            <div class="form-group" style="display: none">
+                <label class="col-xs-2 control-label" for="customer">Customer</label>
+                <div class="col-xs-6">
+                    <input type="text" th:field="*{customer}" class="form-control" placeholder="customer" id="customer"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-2 control-label">Customer Name</label>
+                <div class="col-xs-6">
+                    <span th:text="${customer.name}">customer Name</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-2 control-label">Customer Telephone</label>
+                <div class="col-xs-6">
+                    <span th:text="${customer.telephone}">customer Telephone</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-2 control-label" for="date">Date</label>
+                <div class="col-xs-6">
+                    <input type="text" th:field="*{date}" class="form-control date-picker" placeholder="date" id="date"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-2 control-label" for="time">Time</label>
+                <div class="col-xs-6">
+                    <input type="text" th:field="*{time}" class="form-control time-picker" placeholder="time" id="time"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-2 control-label" for="zone">Zone</label>
+                <div class="col-xs-6">
+                    <select id="zone" th:field="*{ligne}" class="form-control">
+                        <option value="" text="----Choose Ligne----"></option>
+                        <option th:each="l: ${lignes}" th:value="${l.idLigne}"  th:text="${l.fromDestination}+' To '+${l.toDestination}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+
+                <div class="col-xs-6">
+                    <input type="submit" class="btn btn-danger pull-right" value="Save"/>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+</html>

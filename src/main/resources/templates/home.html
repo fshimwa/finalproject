@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="main">
+<head>
+    <title>Welcome to Volcano</title>
+</head>
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="row" layout:fragment="pageHeader">
+        <div class="col-lg-12">
+            <h1 class="page-header">
+                Welcome
+            </h1>
+            <ol class="breadcrumb">
+
+            </ol>
+        </div>
+    </div>
+    <!-- /.row -->
+    <div class="row">
+        <div class="col-lg-12" layout:fragment="content">
+Welcome to Volcano Ticketing Application
+        </div>
+    </div>
+
+</div>
+</html>
