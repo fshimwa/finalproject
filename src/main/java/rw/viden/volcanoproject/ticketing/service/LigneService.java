@@ -15,4 +15,5 @@ public interface LigneService {
     Ligne getById(Integer idLigne);
     List<Bus> getBusByIdLigne(Integer idLigne);
     List<Ligne> getByFromAndTo(String fromDep, String toDep);
+    boolean isBusUsed(Bus bus);
 }

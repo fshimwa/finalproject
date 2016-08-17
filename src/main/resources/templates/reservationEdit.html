@@ -11,7 +11,7 @@
     </h1>
     <ol class="breadcrumb">
         <li>
-            <i class="fa fa-dashboard"></i> <a href="">List Reservation</a>
+            <i class="fa fa-dashboard"></i> <a th:href="@{/reservation/list}">List reservation</a>
         </li>
         <li class="active">
             <i class="fa fa-edit"></i> Add new
@@ -22,35 +22,47 @@
 <div class="row">
     <div class="col-lg-12" layout:fragment="content">
         <form th:object="${reservation}" th:action="@{/reservation/save}" action="#" method="post" class="form-horizontal" role="form">
-            <div style="display: none">
-                <input type="text" th:field="*{id}" class="form-control" placeholder="id"/>
+            <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
+                <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
             </div>
-            <div class="form-group">
+            <div class="form-group" style="display: none">
                 <label class="col-xs-2 control-label" for="customer">Customer</label>
                 <div class="col-xs-6">
-                    <select id="customer" th:field="*{customer}" class="form-control">
-                        <option value="" text="----Choose Customer----"></option>
-                        <option th:each="l : ${customers}" th:value="${l.id}"  th:text="${l.name}"></option>
-                    </select>
+                    <input type="text" th:field="*{customer}" class="form-control" placeholder="customer" id="customer"/>
                 </div>
             </div>
-
+            <div class="form-group">
+                <label class="col-xs-2 control-label">Customer Name</label>
+                <div class="col-xs-6">
+                    <span th:text="${customer.name}">customer Name</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-2 control-label">Customer Telephone</label>
+                <div class="col-xs-6">
+                    <span th:text="${customer.telephone}">customer Telephone</span>
+                </div>
+            </div>
             <div class="form-group">
                 <label class="col-xs-2 control-label" for="date">Date</label>
                 <div class="col-xs-6">
-                    <input type="date" id="date" class="form-control" th:field="*{date}"/>
+                    <input type="text" th:field="*{date}" class="form-control date-picker" placeholder="date" id="date"/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-2 control-label" for="time">Time</label>
                 <div class="col-xs-6">
-                    <input type="time" th:field="*{time}" class="form-control" placeholder="time" id="time"/>
+                    <input type="text" th:field="*{time}" class="form-control time-picker" placeholder="time" id="time"/>
                 </div>
             </div>
+
             <div class="form-group">
-                <label class="col-xs-2 control-label" for="ligne">Ligne</label>
+                <label class="col-xs-2 control-label" for="zone">Zone</label>
                 <div class="col-xs-6">
-                    <input type="ligne" th:field="*{ligne}" class="form-control" placeholder="ligne" id="ligne"/>
+                    <select id="zone" th:field="*{ligne}" class="form-control">
+                        <option value="" text="----Choose Ligne----"></option>
+                        <option th:each="l: ${lignes}" th:value="${l.idLigne}"  th:text="${l.fromDestination}+' To '+${l.toDestination}"></option>
+                    </select>
                 </div>
             </div>
             <div class="form-group">

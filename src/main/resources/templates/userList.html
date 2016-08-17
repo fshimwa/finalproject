@@ -36,7 +36,7 @@
                 <td th:text="${usr.firstName}">firstName</td>
                 <td th:text="${usr.lastName}">lastName</td>
                 <td th:text="${usr.username}">username</td>
-                <td th:text="${usr.role.userRole}">role</td>
+                <td th:text="${usr.role}">role</td>
                 <td th:text="${usr.savedDate}">Saved Date</td>
                 <td th:text="${usr.enabled}? #{true} : #{false}">yes</td>
                 <td><a th:href="@{/users/edit/{id}(id=${usr.id})}">Edit</a> </td>

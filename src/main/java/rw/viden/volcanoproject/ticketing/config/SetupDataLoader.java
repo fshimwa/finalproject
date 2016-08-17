@@ -8,7 +8,6 @@ package rw.viden.volcanoproject.ticketing.config;
         import org.springframework.transaction.annotation.Transactional;
         import rw.viden.volcanoproject.ticketing.model.Role;
         import rw.viden.volcanoproject.ticketing.model.Users;
-        import rw.viden.volcanoproject.ticketing.service.RoleService;
         import rw.viden.volcanoproject.ticketing.service.UserService;
 
         import java.util.Collection;
@@ -25,8 +24,6 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private RoleService roleService;
 
 
 
@@ -45,7 +42,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
         createRoleIfNotFound("Admin");
 
-        final Role adminRole = (Role) roleService.getByUserRole("Admin");
+        final Role adminRole = Role.ADMIN;
         final Users user = new Users();
         user.setUsername("admin");
         String pass = "demo";
@@ -65,14 +62,8 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
     @Transactional
     private final Role createRoleIfNotFound(final String name) {
-        Role role = (Role) roleService.getByUserRole(name);
-        if (role == null) {
-            role = new Role();
-            role.setUserRole(name);
-            role.setVoided(false);
-            roleService.saveOrUpdate(role);
-        }
-        return role;
+        return Role.valueOf(name);
+
     }
 
     @Transactional

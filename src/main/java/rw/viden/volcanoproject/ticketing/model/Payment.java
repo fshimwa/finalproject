@@ -8,6 +8,7 @@ import java.util.Date;
  * Created by Viden ltd on 19/05/2016.
  */
 @Entity
+@Table(name="payment")
 public class Payment {
     private Integer id;
    private Reservation reservation;
@@ -43,7 +44,7 @@ public class Payment {
         this.datePayment = datePayment;
     }
 
-    @Column(columnDefinition = "default 0")
+    @Column(columnDefinition = "int default 0")
     public int getAmount() {
         return amount;
     }

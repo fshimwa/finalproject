@@ -36,6 +36,7 @@ public class APIController {
     @RequestMapping(value = "/api/sms", method = RequestMethod.GET)
     @ResponseBody
     public String saveSms(@RequestParam("id") String id, @RequestParam("text") String text, @RequestParam("sender") String sender, @RequestParam("time") String time) {
+       System.out.println(text+"====================");
         String[] mess = text.split(" ");
         if (mess.length >= 5) {
             String keyword = mess[1];

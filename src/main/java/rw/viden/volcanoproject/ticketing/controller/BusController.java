@@ -1,6 +1,7 @@
 package rw.viden.volcanoproject.ticketing.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import rw.viden.volcanoproject.ticketing.model.Bus;
 import rw.viden.volcanoproject.ticketing.model.CurrentUser;
 import rw.viden.volcanoproject.ticketing.model.Customer;
@@ -33,25 +35,29 @@ public class BusController {
     @Autowired
     UserService userService;
 
+
+    @PreAuthorize("hasAuthority('MANAGER')")
     @RequestMapping(value = "/bus", method = RequestMethod.GET)
     public String getBusPage(Model model) {
         model.addAttribute("bus", new Bus());
         return "busPage";
     }
-
+    @PreAuthorize("hasAuthority('MANAGER')")
     @RequestMapping(value = "/bus/save", method = RequestMethod.POST)
-    public String saveBus(@Valid @ModelAttribute("bus") Bus bus, Authentication authentication, BindingResult bindingResult, Model model) {
+    public String saveBus(@Valid @ModelAttribute("bus") Bus bus, Authentication authentication, BindingResult bindingResult, Model model,RedirectAttributes redirectAttrs) {
         CurrentUser currentUser = (CurrentUser) authentication.getPrincipal();
         Users users = userService.getByUsername(currentUser.getUsername()).get();
         if (busService.isPlaqueUsed(bus.getPlaque())) {
             model.addAttribute("bus", bus);
             model.addAttribute("mss", "Plate already used");
+            redirectAttrs.addFlashAttribute("messages", "success");
             return "busPage";
         }
         bus.setSaveBy(users);
         bus.setSavedDate(new Date());
         busService.saveOrUpdate(bus);
         model.addAttribute("bus", new Bus());
+        model.addAttribute("messages", "unsuccess");
         return "redirect:/bus";
     }
 
@@ -62,13 +68,13 @@ public class BusController {
         model.addAttribute("bus", new Bus());
         return "redirect:/bus";
     }
-
+    @PreAuthorize("hasAuthority('MANAGER')")
     @RequestMapping(value = "/bus/list", method = RequestMethod.GET)
     public String getListPage(Model model) {
         model.addAttribute("bus", busService.getAll());
         return "busList";
     }
-
+    @PreAuthorize("hasAuthority('MANAGER')")
     @RequestMapping(value = "/bus/edit/{id}", method = RequestMethod.GET)
     public String getEditPage(@PathVariable String id, Model model) {
         Integer idBus = Integer.parseInt(id);

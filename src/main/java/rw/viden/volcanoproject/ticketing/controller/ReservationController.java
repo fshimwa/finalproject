@@ -2,12 +2,14 @@ package rw.viden.volcanoproject.ticketing.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import rw.viden.volcanoproject.ticketing.model.*;
 import rw.viden.volcanoproject.ticketing.service.*;
 
@@ -40,6 +42,7 @@ public class ReservationController {
      * @param model
      * @return
      */
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
     @RequestMapping(value = "/reservation", method = RequestMethod.GET)
     public String getReservationPage(Model model) {
         model.addAttribute("reservation", new Reservation());
@@ -57,8 +60,9 @@ public class ReservationController {
      * @param model
      * @return
      */
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
     @RequestMapping(value = "/reservation/save", method = RequestMethod.POST)
-    public String saveReservation(@Valid @ModelAttribute("reservation") Reservation reservation, BindingResult bindingResult, Authentication authentication, Model model) {
+    public String saveReservation(@Valid @ModelAttribute("reservation") Reservation reservation, BindingResult bindingResult, Authentication authentication, Model model, RedirectAttributes redirectAttrs) {
         if (!bindingResult.hasErrors()) {
             Date resDate = reservation.getDate();
             Ligne ligne = reservation.getLigne();
@@ -94,6 +98,7 @@ public class ReservationController {
                 reservation.setSavedDate(new Date());
                 reservationService.saveOrUpdate(reservation);
                 model.addAttribute("reservation", new Reservation());
+                redirectAttrs.addFlashAttribute("messages", "success");
                 return "redirect:/customer";
             }else {
                 model.addAttribute("message","Bus FULL Reservations made:" +countReservations +" with "+busSpace+ " available Places");
@@ -106,6 +111,7 @@ public class ReservationController {
             model.addAttribute("customers", customerService.getAll());
             model.addAttribute("payment", paymentService.getAll());
             model.addAttribute("reservation", reservation);
+            model.addAttribute("messages", "unsuccess");
             return "/reservation";
         }
     }
@@ -125,12 +131,19 @@ public class ReservationController {
         model.addAttribute("reservation", reservationService.getByPaid(false));
         return "reservationList";
     }
-
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
     @RequestMapping(value = "/reservation/edit/{id}", method = RequestMethod.GET)
     public String getEditPage(@PathVariable String id, Model model) {
         Integer idReservation = Integer.parseInt(id);
         Reservation reservation = reservationService.getById(idReservation);
         model.addAttribute("reservation", reservation);
+//        Integer idCustomer = Integer.parseInt(id);
+        Customer customer = reservation.getCustomer();
+        model.addAttribute("customer", customer);
+//        Reservation reservation = new Reservation();
+//        reservation.setCustomer(customer);
+        model.addAttribute("reservation", reservation);
+        model.addAttribute("lignes", ligneService.getAll());
         return "reservationEdit";
     }
 
@@ -139,7 +152,7 @@ public class ReservationController {
         binder.registerCustomEditor(Date.class,
                 new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true, 10));
     }
-
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
     @RequestMapping(value = "/customer/reserve/{id}", method = RequestMethod.GET)
     public String getReservePage(@PathVariable String id, Model model) {
         Integer idCustomer = Integer.parseInt(id);

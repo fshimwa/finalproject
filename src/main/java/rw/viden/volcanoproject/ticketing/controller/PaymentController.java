@@ -2,12 +2,14 @@ package rw.viden.volcanoproject.ticketing.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import rw.viden.volcanoproject.ticketing.model.*;
 import rw.viden.volcanoproject.ticketing.service.PaymentService;
 import rw.viden.volcanoproject.ticketing.service.ReservationService;
@@ -21,6 +23,7 @@ import java.util.Date;
 /**
  * Created by Viden ltd on 27/05/2016.
  */
+
 @Controller
 public class PaymentController {
     @Autowired
@@ -34,6 +37,7 @@ public class PaymentController {
      * @param model
      * @return
      */
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
     @RequestMapping(value = "/payment", method = RequestMethod.GET)
     public String getPaymentPage(Model model) {
         model.addAttribute("payment", new Payment());
@@ -47,8 +51,9 @@ public class PaymentController {
      * @param model
      * @return
      */
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
     @RequestMapping(value = "/payment/save", method = RequestMethod.POST)
-    public String saveJourney(@Valid @ModelAttribute("payment") Payment payment, BindingResult bindingResult, Authentication authentication, Model model) {
+    public String saveJourney(@Valid @ModelAttribute("payment") Payment payment, BindingResult bindingResult, Authentication authentication, Model model, RedirectAttributes redirectAttrs) {
         if (!bindingResult.hasErrors()) {
             CurrentUser currentUser = (CurrentUser) authentication.getPrincipal();
             Users users = userService.getByUsername(currentUser.getUsername()).get();
@@ -59,21 +64,23 @@ public class PaymentController {
             reservationService.saveOrUpdate(reservation);
             paymentService.saveOrUpdate(payment);
             model.addAttribute("payment", new Payment());
+            redirectAttrs.addFlashAttribute("messages", "success");
             return "redirect:/payment/list";
         } else {
             System.out.println(bindingResult.getAllErrors().size()+" "+bindingResult.getFieldError().toString());
             model.addAttribute("reservations", reservationService.getAll());
             model.addAttribute("payment", payment);
+            model.addAttribute("messages", "unsuccess");
             return "/payment/list";
         }
     }
-
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
     @RequestMapping(value = "/payment/list", method = RequestMethod.GET)
     public String getListPage(Model model) {
         model.addAttribute("payment", paymentService.getAll());
         return "paymentList";
     }
-
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
     @RequestMapping(value = "/payment/edit/{id}", method = RequestMethod.GET)
     public String getEditPage(@PathVariable String id, Model model) {
         Integer idPayment = Integer.parseInt(id);
@@ -81,7 +88,7 @@ public class PaymentController {
         model.addAttribute("payment", payment);
         return "paymentEdit";
     }
-
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
     @RequestMapping(value = "/reservation/pay/{id}", method = RequestMethod.GET)
     public String getPayPage(@PathVariable String id, Model model) {
         Integer idReservation = Integer.parseInt(id);

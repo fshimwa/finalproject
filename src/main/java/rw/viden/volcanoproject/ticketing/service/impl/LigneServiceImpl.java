@@ -52,4 +52,16 @@ public class LigneServiceImpl implements LigneService {
 
         return ligneDao.findByFromDestinationAndToDestination(fromDep,toDep);
     }
+
+    @Override
+    public boolean isBusUsed(Bus bus) {
+        List<Ligne> lignes=getAll();
+        for(Ligne l:lignes){
+            for(Bus b:l.getAssignedBus()){
+                if(b.getPlaque().equalsIgnoreCase(bus.getPlaque()))
+                    return true;
+            }
+        }
+        return false;
+    }
 }

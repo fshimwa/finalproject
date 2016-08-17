@@ -78,7 +78,8 @@ public class Users {
     }
 
 
-    @ManyToOne(cascade = CascadeType.ALL,targetEntity = Role.class, fetch = FetchType.EAGER)
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
     public Role getRole() {
         return role;
     }
