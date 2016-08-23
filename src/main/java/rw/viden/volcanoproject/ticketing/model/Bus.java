@@ -24,7 +24,6 @@ public class Bus {
     public Integer getIdBus() {
         return idBus;
     }
-
     public void setIdBus(Integer idBus) {
         this.idBus = idBus;
     }

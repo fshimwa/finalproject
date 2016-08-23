@@ -19,12 +19,12 @@
 </div>
 <div layout:fragment="content">
     <div id="auth" name="urls" sec:authorize="isAuthenticated()" class="alert alert-danger alert-dismissible" role="alert">
-        <h1> Error
+        <h1>
             <br/>
             <span th:text="${message}"></span>
             <br/>
             <div >
-                <strong>Error!</strong> User Data Not Saved.
+                <strong></strong> User Data Not Saved.
             </div>
         </h1>
     </div>

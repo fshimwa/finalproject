@@ -37,11 +37,17 @@ public class ReportsController {
     public ResponseEntity<List<CustomerLigne>> getCustomerLigne(){
 
         List<CustomerLigne> customerLignes=new ArrayList<>();
-        int count=0;
+
         for(Ligne ligne:ligneService.getAll()) {
             for(Customer customer:customerService.getAll()) {
+                int count=0;
                 count = reservationService.countByCustomerAndLigne(customer, ligne);
-                customerLignes.add(new CustomerLigne(customer,ligne,count));
+                if(count<=0) {
+                    continue;
+                }else {
+                    customerLignes.add(new CustomerLigne(customer, ligne, count));
+                }
+
             }
 
         }

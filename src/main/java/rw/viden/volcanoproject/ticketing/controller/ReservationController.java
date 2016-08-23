@@ -99,7 +99,7 @@ public class ReservationController {
                 reservationService.saveOrUpdate(reservation);
                 model.addAttribute("reservation", new Reservation());
                 redirectAttrs.addFlashAttribute("messages", "success");
-                return "redirect:/customer";
+                return "redirect:/customer/list";
             }else {
                 model.addAttribute("message","Bus FULL Reservations made:" +countReservations +" with "+busSpace+ " available Places");
                 return "errorCustom";

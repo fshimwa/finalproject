@@ -50,14 +50,14 @@ public class BusController {
         if (busService.isPlaqueUsed(bus.getPlaque())) {
             model.addAttribute("bus", bus);
             model.addAttribute("mss", "Plate already used");
-            redirectAttrs.addFlashAttribute("messages", "success");
+            redirectAttrs.addFlashAttribute("messages", "unsuccess");
             return "busPage";
         }
         bus.setSaveBy(users);
         bus.setSavedDate(new Date());
         busService.saveOrUpdate(bus);
         model.addAttribute("bus", new Bus());
-        model.addAttribute("messages", "unsuccess");
+        model.addAttribute("messages", "success");
         return "redirect:/bus";
     }
 
