@@ -31,13 +31,13 @@ public class DriverController {
     UserService userService;
 
 
-    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     @RequestMapping(value = "/driver",method = RequestMethod.GET)
     public String getDriverPage(Model model){
         model.addAttribute("driver",new Driver());
         return "driver";
     }
-    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     @RequestMapping(value = "/driver/save",method = RequestMethod.POST)
     public String saveDriver(@Valid @ModelAttribute("driver") Driver driver, Authentication authentication, BindingResult bindingResult, Model model) {
         CurrentUser currentUser = (CurrentUser) authentication.getPrincipal();
@@ -56,13 +56,13 @@ public class DriverController {
         model.addAttribute("driver",new Driver());
         return "redirect:/driver";
     }
-    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     @RequestMapping(value = "/driver/list",method = RequestMethod.GET)
     public String getListPage(Model model){
         model.addAttribute("driver",driverService.getAll());
         return "driverList";
     }
-    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     @RequestMapping(value = "/driver/edit/{id}", method = RequestMethod.GET)
     public String getEditPage(@PathVariable String id, Model model) {
         Integer idDriver = Integer.parseInt(id);

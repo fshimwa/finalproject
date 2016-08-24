@@ -60,7 +60,7 @@ public class ReservationController {
      * @param model
      * @return
      */
-    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('EMPLOYEE','ADMIN')")
     @RequestMapping(value = "/reservation/save", method = RequestMethod.POST)
     public String saveReservation(@Valid @ModelAttribute("reservation") Reservation reservation, BindingResult bindingResult, Authentication authentication, Model model, RedirectAttributes redirectAttrs) {
         if (!bindingResult.hasErrors()) {
@@ -131,7 +131,7 @@ public class ReservationController {
         model.addAttribute("reservation", reservationService.getByPaid(false));
         return "reservationList";
     }
-    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('EMPLOYEE','ADMIN')")
     @RequestMapping(value = "/reservation/edit/{id}", method = RequestMethod.GET)
     public String getEditPage(@PathVariable String id, Model model) {
         Integer idReservation = Integer.parseInt(id);
@@ -152,7 +152,7 @@ public class ReservationController {
         binder.registerCustomEditor(Date.class,
                 new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true, 10));
     }
-    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('EMPLOYEE','ADMIN')")
     @RequestMapping(value = "/customer/reserve/{id}", method = RequestMethod.GET)
     public String getReservePage(@PathVariable String id, Model model) {
         Integer idCustomer = Integer.parseInt(id);

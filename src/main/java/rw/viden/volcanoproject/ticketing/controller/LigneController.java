@@ -37,7 +37,7 @@ public class LigneController {
      * @param model
      * @return
      */
-    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     @RequestMapping(value = "/ligne", method = RequestMethod.GET)
     public String getLignePage(Model model) {
         model.addAttribute("ligne", new Ligne());
@@ -62,7 +62,7 @@ public class LigneController {
      * @param model
      * @return
      */
-    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     @RequestMapping(value = "/ligne/save", method = RequestMethod.POST)
     public String saveLigne(@Valid @ModelAttribute("ligne") Ligne ligne,BindingResult bindingResult, Authentication authentication , Model model, RedirectAttributes redirectAttrs) {
        if(!bindingResult.hasErrors()){
@@ -91,13 +91,13 @@ public class LigneController {
         return "redirect:/ligne";
 
     }
-    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     @RequestMapping(value = "/ligne/list",method = RequestMethod.GET)
     public String getListPage(Model model){
         model.addAttribute("ligne",ligneService.getAll());
         return "ligneList";
     }
-    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     @RequestMapping(value = "/ligne/edit/{id}", method = RequestMethod.GET)
     public String getEditPage(@PathVariable String id, Model model) {
         Integer idLigne = Integer.parseInt(id);
@@ -106,7 +106,7 @@ public class LigneController {
         model.addAttribute("buses",busService.getAll());
         return "ligneEdit";
     }
-    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     @RequestMapping(value = "/ligne/addJourney/{id}", method = RequestMethod.GET)
     public String getJourneyPage(@PathVariable String id, Model model) {
         Integer idLigne = Integer.parseInt(id);

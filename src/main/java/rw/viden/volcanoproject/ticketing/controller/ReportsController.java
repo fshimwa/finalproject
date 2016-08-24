@@ -31,7 +31,7 @@ public class ReportsController {
     LigneService ligneService;
     @Autowired
     CustomerService customerService;
-    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     @RequestMapping(value = "/api/getCount", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<List<CustomerLigne>> getCustomerLigne(){

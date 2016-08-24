@@ -32,13 +32,13 @@ public class CustomerController {
     UserService userService;
 
 
-    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('EMPLOYEE','ADMIN')")
     @RequestMapping(value = "/customer",method = RequestMethod.GET)
     public String getCustomerPage(Model model){
         model.addAttribute("customer",new Customer());
         return "customer";
     }
-    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('EMPLOYEE','ADMIN')")
     @RequestMapping(value = "/customer/save",method = RequestMethod.POST)
     public String saveCustomer(@Valid @ModelAttribute("customer") Customer customer, Authentication authentication, BindingResult bindingResult, Model model, RedirectAttributes redirectAttrs) {
         CurrentUser currentUser = (CurrentUser) authentication.getPrincipal();
@@ -60,13 +60,13 @@ public class CustomerController {
         model.addAttribute("messages", "unsuccess");
         return "redirect:/customer";
     }
-    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('EMPLOYEE','ADMIN')")
     @RequestMapping(value = "/customer/list",method = RequestMethod.GET)
     public String getListPage(Model model){
         model.addAttribute("customer",customerService.getAll());
         return "customerList";
     }
-    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('EMPLOYEE','ADMIN')")
     @RequestMapping(value = "/customer/edit/{id}", method = RequestMethod.GET)
     public String getEditPage(@PathVariable String id, Model model) {
         Integer idCustomer = Integer.parseInt(id);

@@ -37,7 +37,7 @@ public class PaymentController {
      * @param model
      * @return
      */
-    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('EMPLOYEE','ADMIN')")
     @RequestMapping(value = "/payment", method = RequestMethod.GET)
     public String getPaymentPage(Model model) {
         model.addAttribute("payment", new Payment());
@@ -51,7 +51,7 @@ public class PaymentController {
      * @param model
      * @return
      */
-    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('EMPLOYEE','ADMIN')")
     @RequestMapping(value = "/payment/save", method = RequestMethod.POST)
     public String saveJourney(@Valid @ModelAttribute("payment") Payment payment, BindingResult bindingResult, Authentication authentication, Model model, RedirectAttributes redirectAttrs) {
         if (!bindingResult.hasErrors()) {
@@ -74,13 +74,13 @@ public class PaymentController {
             return "/payment/list";
         }
     }
-    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('EMPLOYEE','ADMIN')")
     @RequestMapping(value = "/payment/list", method = RequestMethod.GET)
     public String getListPage(Model model) {
         model.addAttribute("payment", paymentService.getAll());
         return "paymentList";
     }
-    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('EMPLOYEE','ADMIN')")
     @RequestMapping(value = "/payment/edit/{id}", method = RequestMethod.GET)
     public String getEditPage(@PathVariable String id, Model model) {
         Integer idPayment = Integer.parseInt(id);
@@ -88,7 +88,7 @@ public class PaymentController {
         model.addAttribute("payment", payment);
         return "paymentEdit";
     }
-    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('EMPLOYEE','ADMIN')")
     @RequestMapping(value = "/reservation/pay/{id}", method = RequestMethod.GET)
     public String getPayPage(@PathVariable String id, Model model) {
         Integer idReservation = Integer.parseInt(id);

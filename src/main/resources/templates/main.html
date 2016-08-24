@@ -100,7 +100,7 @@
                         </li>
                     </ul>
                 </li>
-                <li sec:authorize="hasAuthority('EMPLOYEE')">
+                <li sec:authorize="hasAnyAuthority('EMPLOYEE','ADMIN')">
 
                     <a href="#" data-toggle="collapse" data-target="#customer"><i class="fa fa-fw fa-arrows-v"></i>
                         Customer <i class="fa fa-fw fa-caret-down"></i></a>
@@ -110,7 +110,7 @@
                         </li>
                     </ul>
                 </li>
-                <li sec:authorize="hasAuthority('MANAGER')">
+                <li sec:authorize="hasAnyAuthority('MANAGER','ADMIN')">
                     <a href="#" data-toggle="collapse" data-target="#bus"><i class="fa fa-fw fa-arrows-v"></i> Bus <i
                             class="fa fa-fw fa-caret-down"></i></a>
                     <ul id="bus" class="collapse">
@@ -122,7 +122,7 @@
                         </li>
                     </ul>
                 </li>
-                <li sec:authorize="hasAuthority('MANAGER')">
+                <li sec:authorize="hasAnyAuthority('MANAGER','ADMIN')">
                     <a href="#" data-toggle="collapse" data-target="#ligne"><i class="fa fa-fw fa-arrows-v"></i> Zone
                         <i class="fa fa-fw fa-caret-down"></i></a>
                     <ul id="ligne" class="collapse">
@@ -134,7 +134,7 @@
                         </li>
                     </ul>
                 </li>
-                <li sec:authorize="hasAuthority('MANAGER')">
+                <li sec:authorize="hasAnyAuthority('MANAGER','ADMIN')">
                     <a href="#" data-toggle="collapse" data-target="#driver"><i class="fa fa-fw fa-arrows-v"></i> Driver
                         <i class="fa fa-fw fa-caret-down"></i></a>
                     <ul id="driver" class="collapse">
@@ -146,7 +146,7 @@
                         </li>
                     </ul>
                 </li>
-                <li sec:authorize="hasAuthority('MANAGER')">
+                <li sec:authorize="hasAnyAuthority('MANAGER','ADMIN')">
                     <a href="#" data-toggle="collapse" data-target="#journey"><i class="fa fa-fw fa-arrows-v"></i>
                         Journey <i class="fa fa-fw fa-caret-down"></i></a>
                     <ul id="journey" class="collapse">
@@ -155,7 +155,7 @@
                         </li>
                     </ul>
                 </li>
-                <li sec:authorize="hasAuthority('EMPLOYEE')">
+                <li sec:authorize="hasAnyAuthority('EMPLOYEE','ADMIN')">
                     <a href="#" data-toggle="collapse" data-target="#payment"><i class="fa fa-fw fa-arrows-v"></i>
                         Payment
                         <i class="fa fa-fw fa-caret-down"></i></a>
@@ -165,7 +165,7 @@
                         </li>
                     </ul>
                 </li>
-                <li sec:authorize="hasAuthority('EMPLOYEE')">
+                <li sec:authorize="hasAnyAuthority('EMPLOYEE','ADMIN')">
                     <a href="#" data-toggle="collapse" data-target="#reservation"><i class="fa fa-fw fa-arrows-v"></i>
                         reservation
                         <i class="fa fa-fw fa-caret-down"></i></a>
@@ -175,7 +175,7 @@
                         </li>
                     </ul>
                 </li>
-                <li sec:authorize="hasAuthority('MANAGER')">
+                <li sec:authorize="hasAnyAuthority('MANAGER','ADMIN')">
                     <a href="#" id="printPdf"><i class="fa fa-fw fa-print"></i>
                         Print List of Customer per Zone and journey done
                         </a>

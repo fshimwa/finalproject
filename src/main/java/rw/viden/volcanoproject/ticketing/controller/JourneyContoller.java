@@ -38,7 +38,7 @@ public class JourneyContoller {
      * @param model
      * @return
      */
-    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     @RequestMapping(value = "/journey", method = RequestMethod.GET)
     public String getJourneyPage(Model model) {
         model.addAttribute("journey", new Journey());
@@ -55,7 +55,7 @@ public class JourneyContoller {
      * @param model
      * @return
      */
-    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     @RequestMapping(value = "/journey/save", method = RequestMethod.POST)
     public String saveJourney(@Valid @ModelAttribute("journey") Journey journey,BindingResult bindingResult, Authentication authentication , Model model, RedirectAttributes redirectAttrs) {
         if(!bindingResult.hasErrors()) {
@@ -86,13 +86,13 @@ public class JourneyContoller {
             return "redirect:/journey";
 
         }
-    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     @RequestMapping(value = "/journey/list",method = RequestMethod.GET)
     public String getListPage(Model model){
         model.addAttribute("journey",journeyService.getAll());
         return "journeyList";
     }
-    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     @RequestMapping(value = "/journey/edit/{id}", method = RequestMethod.GET)
     public String getEditPage(@PathVariable String id, Model model) {
         Integer idJourney = Integer.parseInt(id);

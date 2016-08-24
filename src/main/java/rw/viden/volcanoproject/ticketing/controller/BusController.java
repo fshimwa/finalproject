@@ -36,13 +36,13 @@ public class BusController {
     UserService userService;
 
 
-    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     @RequestMapping(value = "/bus", method = RequestMethod.GET)
     public String getBusPage(Model model) {
         model.addAttribute("bus", new Bus());
         return "busPage";
     }
-    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     @RequestMapping(value = "/bus/save", method = RequestMethod.POST)
     public String saveBus(@Valid @ModelAttribute("bus") Bus bus, Authentication authentication, BindingResult bindingResult, Model model,RedirectAttributes redirectAttrs) {
         CurrentUser currentUser = (CurrentUser) authentication.getPrincipal();
@@ -68,13 +68,13 @@ public class BusController {
         model.addAttribute("bus", new Bus());
         return "redirect:/bus";
     }
-    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     @RequestMapping(value = "/bus/list", method = RequestMethod.GET)
     public String getListPage(Model model) {
         model.addAttribute("bus", busService.getAll());
         return "busList";
     }
-    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     @RequestMapping(value = "/bus/edit/{id}", method = RequestMethod.GET)
     public String getEditPage(@PathVariable String id, Model model) {
         Integer idBus = Integer.parseInt(id);
