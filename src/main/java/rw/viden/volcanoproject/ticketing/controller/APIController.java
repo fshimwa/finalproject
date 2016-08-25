@@ -35,19 +35,20 @@ public class APIController {
 
     @RequestMapping(value = "/api/sms", method = RequestMethod.GET)
     @ResponseBody
-    public String saveSms(@RequestParam("id") String id, @RequestParam("text") String text, @RequestParam("sender") String sender, @RequestParam("time") String time) {
+    public String saveSms(@RequestParam("text") String text, @RequestParam("sender") String sender, @RequestParam("time") String time) {
        System.out.println(text+"====================");
         String[] mess = text.split(" ");
-        if (mess.length >= 5) {
-            String keyword = mess[1];
-            String fromDep = mess[2];
-            String toDest = mess[3];
-            String dateJou = mess[4];
-            String timeJou = mess[5];
+        if (mess.length >= 4) {
+            String keyword = mess[0];
+            String fromDep = mess[1];
+            String toDest = mess[2];
+            String dateJou = mess[3];
+            String timeJou = mess[4];
             if (keyword.equalsIgnoreCase("check")) {
 
                 List<Ligne> lignes = ligneService.getByFromAndTo(fromDep, toDest);
                 if (lignes.size() <= 0) {
+                    System.out.println("Departure Destination not exist" +" ====================");
                     return "Departure Destination not exist";
                 }
 
@@ -56,6 +57,7 @@ public class APIController {
                 try {
                     date = format.parse(dateJou);
                 } catch (ParseException e) {
+                    System.out.println("Date is incorrect" +" ====================");
                     return "Date is incorrect";
                 }
                 return reserveAndCheck(date,lignes.get(0),timeJou,true,sender);
@@ -64,14 +66,15 @@ public class APIController {
 
                 List<Ligne> lignes = ligneService.getByFromAndTo(fromDep, toDest);
                 if (lignes.size() <= 0) {
-                    return "Departure Destination not exist";
+                    System.out.println("Date is incorrect" +" ====================");
+                    return "Date is incorrect";
                 }
-                String string = "January 2, 2010";
                 DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
                 Date date ;
                 try {
                     date = format.parse(dateJou);
                 } catch (ParseException e) {
+                    System.out.println("Date is incorrect" +" ====================");
                     return "Date is incorrect";
                 }
                 return reserveAndCheck(date,lignes.get(0),timeJou,false,sender);
@@ -79,12 +82,12 @@ public class APIController {
             }
 
         }
-        else if(mess[1].equals("pay")){
-            Reservation reservation=reservationService.getById(Integer.parseInt(mess[2]));
+        else if(mess[0].equals("pay")){
+            Reservation reservation=reservationService.getById(Integer.parseInt(mess[1]));
             try {
                 checkNotNull(reservation);
             }catch (NullPointerException e){
-                return "Couldn't find reservation with ID"+mess[2];
+                return "Couldn't find reservation with ID"+mess[1];
             }
             return "Payment initiated for Reservation with ID: "+reservation.getId();
         }
@@ -131,6 +134,9 @@ public class APIController {
             reservation.setCustomer(customer);
             reservation.setSaveBy(users);
             reservation.setSavedDate(new Date());
+            reservation.setLigne(ligne);
+            reservation.setDate(resDate);
+            reservation.setTime(time);
             reservationService.saveOrUpdate(reservation);
 
             return "Reservation Saved, to pay use this number: " + reservation.getId();
