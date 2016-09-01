@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import rw.viden.volcanoproject.ticketing.model.*;
 import rw.viden.volcanoproject.ticketing.service.*;
+import rw.viden.volcanoproject.ticketing.util.ReservationBusUtil;
 
 import javax.validation.constraints.NotNull;
 import java.text.DateFormat;
@@ -39,11 +40,12 @@ public class APIController {
        System.out.println(text+"====================");
         String[] mess = text.split(" ");
         if (mess.length >= 4) {
-            String keyword = mess[0];
-            String fromDep = mess[1];
-            String toDest = mess[2];
-            String dateJou = mess[3];
-            String timeJou = mess[4];
+            String hack = mess[0];
+            String keyword = mess[1];
+            String fromDep = mess[2];
+            String toDest = mess[3];
+            String dateJou = mess[4];
+            String timeJou = mess[5];
             if (keyword.equalsIgnoreCase("check")) {
 
                 List<Ligne> lignes = ligneService.getByFromAndTo(fromDep, toDest);
@@ -82,12 +84,12 @@ public class APIController {
             }
 
         }
-        else if(mess[0].equals("pay")){
-            Reservation reservation=reservationService.getById(Integer.parseInt(mess[1]));
+        else if(mess[1].equals("pay")){
+            Reservation reservation=reservationService.getById(Integer.parseInt(mess[2]));
             try {
                 checkNotNull(reservation);
             }catch (NullPointerException e){
-                return "Couldn't find reservation with ID"+mess[1];
+                return "Couldn't find reservation with ID"+mess[2];
             }
             return "Payment initiated for Reservation with ID: "+reservation.getId();
         }
@@ -138,6 +140,8 @@ public class APIController {
             reservation.setDate(resDate);
             reservation.setTime(time);
             reservationService.saveOrUpdate(reservation);
+            ReservationBusUtil reservationBusUtil =new ReservationBusUtil();
+            reservationBusUtil.addBusAfterReservation(reservation.getDate(), reservation.getLigne(),reservation.getTime());
 
             return "Reservation Saved, to pay use this number: " + reservation.getId();
         } else {

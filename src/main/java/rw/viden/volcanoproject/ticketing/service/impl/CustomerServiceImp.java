@@ -39,6 +39,8 @@ public class CustomerServiceImp implements CustomerService {
 
     @Override
     public List<Customer> getByTelephone(String telephone) {
+        if(!telephone.startsWith("+250"))
+            telephone="+25"+telephone;
         return customerDao.findByTelephone(telephone);
     }
 
