@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import rw.viden.volcanoproject.ticketing.model.*;
 import rw.viden.volcanoproject.ticketing.service.*;
+import rw.viden.volcanoproject.ticketing.util.ReservationBusUtil;
 
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
@@ -64,55 +65,25 @@ public class ReservationController {
     @RequestMapping(value = "/reservation/save", method = RequestMethod.POST)
     public String saveReservation(@Valid @ModelAttribute("reservation") Reservation reservation, BindingResult bindingResult, Authentication authentication, Model model, RedirectAttributes redirectAttrs) {
         if (!bindingResult.hasErrors()) {
-            Date resDate = reservation.getDate();
-            Ligne ligne = reservation.getLigne();
+            CurrentUser currentUser = (CurrentUser) authentication.getPrincipal();
+            Users users = userService.getByUsername(currentUser.getUsername()).get();
+            reservation.setSaveBy(users);
+            reservation.setSavedDate(new Date());
+            reservationService.saveOrUpdate(reservation);
+            ReservationBusUtil reservationBusUtil =new ReservationBusUtil(reservationService,userService,ligneService,journeyService);
+            reservationBusUtil.addBusAfterReservation(reservation.getDate(), reservation.getLigne(),reservation.getTime());
+//            if(!reservationBusUtil.addBusAfterReservation(reservation.getDate(), reservation.getLigne(),reservation.getTime())){
+//                model.addAttribute("message", "Couldn't automatically save new journey, Please contact administrator");
+//                return "errorCustom";
+//            }
 
-            List<Reservation> reservations = reservationService.getByDateAndLigne(resDate, ligne);
-            List<Journey> journeys = journeyService.getByDateAndLigne(resDate, ligne);
-            int busSpace = 0;
-            int countReservations = 0;
-            if(journeys.size()<=0){
-                model.addAttribute("message","No Journey Scheduled on that time, Contact Administrator");
-                return "error";
-            }
-            for (Journey j : journeys) {
+            model.addAttribute("reservation", new Reservation());
+            redirectAttrs.addFlashAttribute("messages", "success");
+            return "redirect:/customer/list";
 
-                if (j.getTimeDeparture().replace(" ","").equalsIgnoreCase(reservation.getTime().replace(" ",""))) {
-                    for (Bus b : j.getLigne().getAssignedBus()) {
-
-                        busSpace += b.getSeats();
-
-                    }
-
-                }
-            }
-            for (Reservation r : reservations) {
-                if (r.getTime().equalsIgnoreCase(reservation.getTime()))
-                    countReservations += 1;
-            }
-            if (countReservations+1 <=busSpace) {
-
-                CurrentUser currentUser = (CurrentUser) authentication.getPrincipal();
-                Users users = userService.getByUsername(currentUser.getUsername()).get();
-                reservation.setSaveBy(users);
-                reservation.setSavedDate(new Date());
-                reservationService.saveOrUpdate(reservation);
-                model.addAttribute("reservation", new Reservation());
-                redirectAttrs.addFlashAttribute("messages", "success");
-                return "redirect:/customer/list";
-            }else {
-                model.addAttribute("message","Bus FULL Reservations made:" +countReservations +" with "+busSpace+ " available Places");
-                return "errorCustom";
-
-            }
         } else {
-
-            model.addAttribute("lignes", ligneService.getAll());
-            model.addAttribute("customers", customerService.getAll());
-            model.addAttribute("payment", paymentService.getAll());
-            model.addAttribute("reservation", reservation);
-            model.addAttribute("messages", "unsuccess");
-            return "/reservation";
+            model.addAttribute("message", "Couldn't save, Please contact administrator");
+            return "errorCustom";
         }
     }
 
@@ -131,6 +102,7 @@ public class ReservationController {
         model.addAttribute("reservation", reservationService.getByPaid(false));
         return "reservationList";
     }
+
     @PreAuthorize("hasAnyAuthority('EMPLOYEE','ADMIN')")
     @RequestMapping(value = "/reservation/edit/{id}", method = RequestMethod.GET)
     public String getEditPage(@PathVariable String id, Model model) {
@@ -152,6 +124,7 @@ public class ReservationController {
         binder.registerCustomEditor(Date.class,
                 new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true, 10));
     }
+
     @PreAuthorize("hasAnyAuthority('EMPLOYEE','ADMIN')")
     @RequestMapping(value = "/customer/reserve/{id}", method = RequestMethod.GET)
     public String getReservePage(@PathVariable String id, Model model) {
