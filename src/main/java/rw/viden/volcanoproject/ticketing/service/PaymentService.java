@@ -15,7 +15,7 @@ public interface  PaymentService {
     void disable(Payment payment);
     List<Payment> getAll();
     List<Payment> getByDate(Date date);
-    //List<Payment> getByReceipt(String receipt);
+    List<Payment> getByDateBetween(Date start, Date end);
 
     Payment getById(Integer idPayment);
 }

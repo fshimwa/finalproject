@@ -20,7 +20,6 @@
           rel="stylesheet" media="all"/>
 
 
-
     <link href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.6/css/bootstrap-theme.css"
           th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap-theme.css}"
           rel="stylesheet" media="all"/>
@@ -34,7 +33,7 @@
           media="all"/>
     <link rel="stylesheet" type="text/css"
           href="https://cdn.datatables.net/t/dt/jq-2.2.0,jszip-2.5.0,pdfmake-0.1.18,dt-1.10.11,b-1.1.2,b-colvis-1.1.2,b-flash-1.1.2,b-html5-1.1.2,b-print-1.1.2/datatables.min.css"/>
-    <link rel="stylesheet" type="text/css" href="../static/css/sb-admin.css" th:href="@{/css/sb-admin.css}" />
+    <link rel="stylesheet" type="text/css" href="../static/css/sb-admin.css" th:href="@{/css/sb-admin.css}"/>
     <!-- Custom CSS -->
 
     <!-- Custom Fonts -->
@@ -163,6 +162,10 @@
                         <li>
                             <a th:href="@{/payment/list}">List Payment</a>
                         </li>
+                        <li>
+                            <a th:href="@{/payment/report}">List Payment Per Period</a>
+                        </li>
+
                     </ul>
                 </li>
                 <li sec:authorize="hasAnyAuthority('EMPLOYEE','ADMIN')">
@@ -178,7 +181,7 @@
                 <li sec:authorize="hasAnyAuthority('MANAGER','ADMIN')">
                     <a href="#" id="printPdf"><i class="fa fa-fw fa-print"></i>
                         Print List of Customer per Zone and journey done
-                        </a>
+                    </a>
 
                 </li>
             </ul>
@@ -250,7 +253,6 @@
     // <![CDATA[
 
 
-
     $(document).ready(function () {
 
 
@@ -294,7 +296,21 @@
             timeFormat: 'hh:mm:ss',
             changeMonth: true,
             changeYear: true,
-            showOtherMonths: true
+            showOtherMonths: true,
+            onSelect: function (selectedDate) {
+                $("#enddate").datepicker("option", "minDate", selectedDate);
+            }
+        });
+
+        $('.date-picker2').datepicker({
+            dateFormat: "yy-mm-dd",
+            timeFormat: 'hh:mm:ss',
+            changeMonth: true,
+            changeYear: true,
+            showOtherMonths: true,
+            onSelect: function (selectedDate) {
+                $("#startdate").datepicker("option", "maxDate", selectedDate);
+            }
 
         });
 
@@ -304,10 +320,10 @@
             interval: 1,
             step: 15,
         });
-//       ------------------------------------------------ DataTables--------------------------------------------
-//        $('.dataTab').dataTable({
-//            "pagingType": "full_numbers"
-//        });
+        //       ------------------------------------------------ DataTables--------------------------------------------
+        //        $('.dataTab').dataTable({
+        //            "pagingType": "full_numbers"
+        //        });
 
 
         var example = $('#example').DataTable({
@@ -374,36 +390,36 @@
                 e.stopPropagation();
             });
         });
-//        example.columns( '.amount' ).every( function () {
-//            var sum = this
-//                    .data()
-//                    .reduce( function (a,b) {
-//                        return a + b;
-//                    } );
-//
-//            $( this.footer() ).html( 'Sum: '+sum );
-//        } );
-//        $('#example thead th').each(function () {
-//            var title = $('#example tfoot th').eq($(this).index()).text();
-//
-//            if (title !== "#")
-//                $(this).html('<input type="text" placeholder="Search ' + title + '" />');
-//        });
-//        $('#example tfoot th').each(function () {
-//            var title = $(this).text();
-//            $(this).html('<input type="text" placeholder="Search ' + title + '" />');
-//        });
+        //        example.columns( '.amount' ).every( function () {
+        //            var sum = this
+        //                    .data()
+        //                    .reduce( function (a,b) {
+        //                        return a + b;
+        //                    } );
+        //
+        //            $( this.footer() ).html( 'Sum: '+sum );
+        //        } );
+        //        $('#example thead th').each(function () {
+        //            var title = $('#example tfoot th').eq($(this).index()).text();
+        //
+        //            if (title !== "#")
+        //                $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+        //        });
+        //        $('#example tfoot th').each(function () {
+        //            var title = $(this).text();
+        //            $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+        //        });
 
-//        var r = $('#example tfoot tr');
-//        r.find('th').each(function () {
-//            $(this).css('padding', 8);
-//        });
-//        $('#example thead').append(r);
+        //        var r = $('#example tfoot tr');
+        //        r.find('th').each(function () {
+        //            $(this).css('padding', 8);
+        //        });
+        //        $('#example thead').append(r);
 
         // --------------------------checkbox--------------------------------------
         $(':checkbox').checkboxpicker();
-//        $('.date-picker').attr("placeholder", "dd/mm/yy");
-//        $(".date-picker").attr("readonly", true);
+        //        $('.date-picker').attr("placeholder", "dd/mm/yy");
+        //        $(".date-picker").attr("readonly", true);
 
         // ------------------------hrs and min------------------------------------
         for (var i = 0; i < 24; i++) {
@@ -420,10 +436,11 @@
             }
             document.getElementById("startmins").innerHTML += ("<option value='" + i + "'>" + s + "  </option>");
         }
-//--------------------------JSON to table----------------------
+        //--------------------------JSON to table----------------------
 
 
-    });
+    })
+    ;
     //    ------------------ Calculate Total for Table -----------------------------------
     function calculate() {
         var table = document.getElementById('report');
@@ -463,28 +480,28 @@
         }
     });
     var custLin = JSON.parse(CustomerLigne);
-//    var len = custLin.length;
-//    var custom = bal.plate;
-//    var amount = bal.amount;
-//    var totalAmount = amount + 10000;
-//    var dt = bal.defaultersList;
+    //    var len = custLin.length;
+    //    var custom = bal.plate;
+    //    var amount = bal.amount;
+    //    var totalAmount = amount + 10000;
+    //    var dt = bal.defaultersList;
     var value = [];
     obj = [];
     var col = ['Customer Name', 'Phone NUmber', 'Ligne From', 'Ligne To', 'Number of Travel'];
-//    for (var i = 0; i < len; i++) {
-//        var dataRow = [];
-//
-//        columns.forEach(function (column) {
-//            dataRow.push(row[column].toString());
-//        })
-//        obj.push({text: bal.defaultersList[i].ticketNo + "", style: 'tableContent'});
-//        obj.push({text: bal.defaultersList[i].plaque + "", style: 'tableContent'});
-//        obj.push({text: bal.defaultersList[i].location + "", style: 'tableContent'});
-//        obj.push({text: bal.defaultersList[i].dateTimeStart + "", style: 'tableContent'});
-//        obj.push({text: bal.defaultersList[i].timeStart + "", style: 'tableContent'});
-//        obj.push({text: bal.defaultersList[i].amount + " Frw", style: 'tableContent'});
-//        value.push(obj);
-//    }
+    //    for (var i = 0; i < len; i++) {
+    //        var dataRow = [];
+    //
+    //        columns.forEach(function (column) {
+    //            dataRow.push(row[column].toString());
+    //        })
+    //        obj.push({text: bal.defaultersList[i].ticketNo + "", style: 'tableContent'});
+    //        obj.push({text: bal.defaultersList[i].plaque + "", style: 'tableContent'});
+    //        obj.push({text: bal.defaultersList[i].location + "", style: 'tableContent'});
+    //        obj.push({text: bal.defaultersList[i].dateTimeStart + "", style: 'tableContent'});
+    //        obj.push({text: bal.defaultersList[i].timeStart + "", style: 'tableContent'});
+    //        obj.push({text: bal.defaultersList[i].amount + " Frw", style: 'tableContent'});
+    //        value.push(obj);
+    //    }
 
     var externalDataRetrievedFromServer = custLin;
     function buildTableBody(data, columns) {
@@ -496,18 +513,14 @@
             var dataRow = [];
 
 
+            var custom = row.customer;
+            var ligne = row.ligne;
 
-                var custom=row.customer;
-                var ligne=row.ligne;
-
-                dataRow.push(custom.name.toString());
-                dataRow.push(custom.telephone);
-                dataRow.push(ligne.fromDestination);
-                dataRow.push(ligne.toDestination);
-                dataRow.push(row.count+'');
-
-
-
+            dataRow.push(custom.name.toString());
+            dataRow.push(custom.telephone);
+            dataRow.push(ligne.fromDestination);
+            dataRow.push(ligne.toDestination);
+            dataRow.push(row.count + '');
 
 
             body.push(dataRow);
@@ -530,13 +543,13 @@
 
 
     };
-//    var column = [];
-//    column.push({text: 'Ticket Number', style: 'tableHeader'});
-//    column.push({text: 'Plaque', style: 'tableHeader'});
-//    column.push({text: 'Location', style: 'tableHeader'});
-//    column.push({text: 'Date', style: 'tableHeader'});
-//    column.push({text: 'time', style: 'tableHeader'});
-//    column.push({text: 'Amount', style: 'tableHeader'});
+    //    var column = [];
+    //    column.push({text: 'Ticket Number', style: 'tableHeader'});
+    //    column.push({text: 'Plaque', style: 'tableHeader'});
+    //    column.push({text: 'Location', style: 'tableHeader'});
+    //    column.push({text: 'Date', style: 'tableHeader'});
+    //    column.push({text: 'time', style: 'tableHeader'});
+    //    column.push({text: 'Amount', style: 'tableHeader'});
 
 
     var docDefinition = {
@@ -596,7 +609,6 @@
                         ]
                     },
                     {text: '\n', style: 'header'},
-
 
 
 //

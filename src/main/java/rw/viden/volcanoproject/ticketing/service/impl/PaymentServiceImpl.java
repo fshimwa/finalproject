@@ -35,13 +35,14 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public List<Payment> getByDate(Date date) {
-        return paymentDao.findByDatePayment(date);
+        return paymentDao.findByDatePayment(new java.sql.Date(date.getTime()));
     }
 
-   // @Override
-    //public List<Payment> getByReceipt(String receipt) {
-        //return paymentDao.findAll();
-   // }
+    @Override
+    public List<Payment> getByDateBetween(Date start, Date end) {
+        return paymentDao.findByDatePaymentBetween(new java.sql.Date(start.getTime()),new java.sql.Date(end.getTime()));
+    }
+
 
     @Override
     public Payment getById(Integer idPayment) {

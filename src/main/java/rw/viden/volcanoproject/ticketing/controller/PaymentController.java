@@ -15,10 +15,16 @@ import rw.viden.volcanoproject.ticketing.service.PaymentService;
 import rw.viden.volcanoproject.ticketing.service.ReservationService;
 import rw.viden.volcanoproject.ticketing.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Viden ltd on 27/05/2016.
@@ -79,6 +85,36 @@ public class PaymentController {
     public String getListPage(Model model) {
         model.addAttribute("payment", paymentService.getAll());
         return "paymentList";
+    }
+    @PreAuthorize("hasAnyAuthority('EMPLOYEE','ADMIN')")
+    @RequestMapping(value = {"/payment/report"}, method = RequestMethod.GET)
+    public String reportPage(Model model, HttpServletRequest request) {
+        return "paymentreport";
+    }
+
+    @PreAuthorize("hasAnyAuthority('EMPLOYEE','ADMIN')")
+    @RequestMapping(value = {"/payment/report"}, method = RequestMethod.POST)
+    public String listPage(Model model, HttpServletRequest request) {
+
+
+        try {
+
+            String dateString = request.getParameter("startdate");
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+            Date startdate = format.parse(dateString);
+
+            String enddateString = request.getParameter("enddate");
+            Date enddate = format.parse(enddateString);
+
+            List<Payment> dataEntryReports = paymentService.getByDateBetween(startdate,enddate);
+//            System.out.println(dataEntryReports.size());
+
+
+            model.addAttribute("payment", dataEntryReports);
+            return "paymentList";
+        }catch (ParseException e){
+            return "redirect:/paymentreport";
+        }
     }
     @PreAuthorize("hasAnyAuthority('EMPLOYEE','ADMIN')")
     @RequestMapping(value = "/payment/edit/{id}", method = RequestMethod.GET)
