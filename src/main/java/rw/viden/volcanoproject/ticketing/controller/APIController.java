@@ -140,7 +140,7 @@ public class APIController {
             reservation.setDate(resDate);
             reservation.setTime(time);
             reservationService.saveOrUpdate(reservation);
-            ReservationBusUtil reservationBusUtil =new ReservationBusUtil(reservationService,userService,ligneService,journeyService);
+            ReservationBusUtil reservationBusUtil =new ReservationBusUtil();
             reservationBusUtil.addBusAfterReservation(reservation.getDate(), reservation.getLigne(),reservation.getTime());
 
             return "Reservation Saved, to pay use this number: " + reservation.getId();
